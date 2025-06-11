@@ -1,1 +1,130 @@
-# track5
+<div align="center">
+  <img src="docs/logo_track5.png" alt="track5" width="100" height="auto" />
+</div>
+<div align="center">
+
+# The <a style="color: #ffc000;">Robo</a><a style="color: #76b900;">Sense</a> Challenge 2025
+## Track <a style="color: #76b900;">#5</a>: Cross-Platform 3D Object Detection
+</div>
+
+<div align="center">
+    <img src="./docs/teaser.png" alt="Track 5 Image" class="img-hover-effect" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
+
+## Overview
+
+- [Overview](#Overview)
+- [News](#News)
+- [Phases](#Phases)
+- [Installation](#installation)
+
+## News
+- [2025-06-12]: The RoboSense Challenge is online.
+
+## Phases
+
+<!-- | Phase                                        | Duration                    | Source Domain                                  | Target Domain                                | Ranking Metric                                                                                   |
+|----------------------------------------------|-----------------------------|------------------------------------------------|-----------------------------------------------|--------------------------------------------------------------------------------------------------|
+| **Phase 1: Vehicle → Drone Adaptation**      | 15 June 2025 – 15 August 2025 | Vehicle LiDAR scans **with** 3D bbox annotations | Unlabeled Drone LiDAR scans                  | AP@0.7 for **Car** class on Drone data                                                           |
+| **Phase 2: Vehicle → Drone & Quadruped Adaptation** | 15 August 2025 – 15 October 2025 | Vehicle LiDAR scans **with** 3D bbox annotations | Unlabeled Drone **&** Quadruped LiDAR scans | Weighted score combining: <br>- AP@0.7 for **Car**<br>- AP@0.5 for **Pedestrian** <br>(computed across both Drone and Quadruped platforms) | -->
+
+
+The Cross-Platform Track is structured into two consecutive phases:
+
+### Phase 1: Vehicle → Drone Adaptation  
+**Duration:** 15 June 2025 – 15 August 2025  
+**Setup:**  
+- **Source domain:** Vehicle LiDAR scans **with** 3D bounding-box annotations  
+- **Target domain:** Unlabeled Drone LiDAR scans  
+**Ranking metric:** AP@0.7 for the **Car** class evaluated on Drone data  
+
+---
+
+### Phase 2: Vehicle → Drone & Quadruped Adaptation  
+**Duration:** 15 August 2025 – 15 October 2025  
+**Setup:**  
+- **Source domain:** Vehicle LiDAR scans with annotations  
+- **Target domains:** Unlabeled Drone and Quadruped LiDAR scans  
+**Ranking metric:** Weighted score combining:  
+  - AP@0.7 for the **Car** class  
+  - AP@0.5 for the **Pedestrian** class  
+  (Scores computed across both Drone and Quadruped platforms.)  
+
+## Installation
+
+This track is developed on top of the popular 3D detection codebase [OpenPCDet](https://github.com/open-mmlab/OpenPCDet). To avoid build failures, **make sure your CUDA version matches your PyTorch installation** before proceeding.
+
+1. **Clone the repository**  
+   ```bash
+   git clone https://github.com/robosense2025/track5.git
+2. **Enter the project directory**  
+   ```bash
+   cd track5
+3. **Install dependencies**  
+   ```bash
+   pip install -r requirements.txt
+4. **Build and install the `pcdet` package**  
+   ```bash
+   python setup.py develop
+5. **Verify installation**  
+   ```bash
+   pip list | grep pcdet
+If you run into any installation issues, please open an issue on the GitHub repo or contact us via the WeChat group. Happy coding!
+
+## Getting Started
+
+### Data Preparation
+
+The Track 5 dataset follows the KITTI format. Each sample consists of:
+- A front-view RGB image
+- A LiDAR point cloud covering the camera’s field of view
+- Calibration parameters
+- 3D bounding-box annotations (for training)  
+> Calibration and annotations are packaged together in `.pkl` files.
+
+We use the **same training set** (vehicle platform) for both phases, but **different validation sets**. The full dataset is hosted on Hugging Face:
+
+[robosense/track5-cross-platform-3d-object-detection](https://huggingface.co/datasets/robosense/datasets/tree/main/track5-cross-platform-3d-object-detection)
+
+1. **Download the dataset**  
+   ```bash
+   python scripts/load_dataset.py $USER_DEFINE_OUTPUT_PATH$
+2. **Link data into the project**  
+   ```bash
+    # Create target directory
+    mkdir -p data/pi3det
+
+    # Link the training split
+    ln -s $USER_DEFINE_OUTPUT_PATH$/track5-cross-platform-3d-object-detection/training \
+        data/pi3det/training
+
+    # Link the validation split for Phase 1 (Drone)
+    ln -s $USER_DEFINE_OUTPUT_PATH$/track5-cross-platform-3d-object-detection/phase1_drone_validation/validation \
+        data/pi3det/validation
+
+    # Link the .pkl info files
+    ln -s $USER_DEFINE_OUTPUT_PATH$/track5-cross-platform-3d-object-detection/pi3det_infos_train.pkl \
+        data/pi3det/pi3det_infos_train.pkl
+    ln -s $USER_DEFINE_OUTPUT_PATH$/track5-cross-platform-3d-object-detection/phase1_drone_validation/pi3det_infos_val.pkl \
+        data/pi3det/pi3det_infos_val.pkl
+3. **Verify your directory structure**  
+After linking, your `data/` folder should look like this:
+   ```bash
+    data/
+    └── pi3det/
+        ├── training/
+        │   ├── image/
+        │   │   ├── 0000000.jpg
+        │   │   └── 0000001.jpg
+        │   └── point_cloud/
+        │       ├── 0000000.bin
+        │       └── 0000001.bin
+        ├── validation/
+        │   ├── image/
+        │   │   ├── 0000000.jpg
+        │   │   └── 0000001.jpg
+        │   └── point_cloud/
+        │       ├── 0000000.bin
+        │       └── 0000001.bin
+        ├── pi3det_infos_train.pkl
+        └── pi3det_infos_val.pkl
