@@ -217,13 +217,12 @@ We report the cross-platform adaptation results including phase1 and phase2.
 * The platform adaptation time is measured with 2 NVIDIA T8 GPUs and PyTorch 2.1.0-cu118.
 ### Phase1 results:
 
-|                                              | Adaptation | Car@R40   | download | 
-|--------------------------------------------- |:-------:|:-------:|:---------:|
-| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | Source-only | 74.42 / 40.35 | - |
-| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | ST3D | 74.42 / 40.35 | - |
-| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | ST3D++ | 74.42 / 40.35 | - |
+|                                              | Adaptation | Car AP0.7@R40 | Car AP0.5@R40 | download | 
+|--------------------------------------------- |:-------:|:-------:|:-------:|:---------:|
+| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | Source-only | 35.04 / 18.15 |40.81 / 35.89 | - |
+| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | ST3D        | 42.09 / 24.20 |45.53 / 39.59 | - |
+| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | ST3D++ | 74.42 / 40.35 |74.42 / 40.35 | - |
 
-下面开始新一节， 帮我根据提供的材料，补充，完善，规范这一节，用英语，md语法：
 ## Visualization Tools for Track5
 We provide a lightweight UI to help you **interactively explore** the dataset and your model’s predictions. Before you begin, make sure you have downloaded and linked the data as described in [Getting Started](#getting-started).
 
