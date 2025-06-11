@@ -17,6 +17,10 @@
 - [News](#News)
 - [Phases](#Phases)
 - [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Baseline Results](#baseline-results)
+- [Visualization Tools for Track5](#visualization-tools-for-track5)
+- [Acknowledge](#acknowledge)
 
 ## News
 - [2025-06-12]: The RoboSense Challenge is online.
