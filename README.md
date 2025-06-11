@@ -88,24 +88,24 @@ We use the **same training set** (vehicle platform) for both phases, but **diffe
 
 1. **Download the dataset**  
    ```bash
-   python scripts/load_dataset.py $USER_DEFINE_OUTPUT_PATH$
+   python scripts/load_dataset.py $USER_DEFINE_OUTPUT_PATH
 2. **Link data into the project**  
    ```bash
     # Create target directory
     mkdir -p data/pi3det
 
     # Link the training split
-    ln -s $USER_DEFINE_OUTPUT_PATH$/track5-cross-platform-3d-object-detection/training \
+    ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/training \
         data/pi3det/training
 
     # Link the validation split for Phase 1 (Drone)
-    ln -s $USER_DEFINE_OUTPUT_PATH$/track5-cross-platform-3d-object-detection/phase1_drone_validation/validation \
+    ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/phase1_drone_validation/validation \
         data/pi3det/validation
 
     # Link the .pkl info files
-    ln -s $USER_DEFINE_OUTPUT_PATH$/track5-cross-platform-3d-object-detection/pi3det_infos_train.pkl \
+    ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/pi3det_infos_train.pkl \
         data/pi3det/pi3det_infos_train.pkl
-    ln -s $USER_DEFINE_OUTPUT_PATH$/track5-cross-platform-3d-object-detection/phase1_drone_validation/pi3det_infos_val.pkl \
+    ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/phase1_drone_validation/pi3det_infos_val.pkl \
         data/pi3det/pi3det_infos_val.pkl
 3. **Verify your directory structure**  
 After linking, your `data/` folder should look like this:
@@ -128,3 +128,132 @@ After linking, your `data/` folder should look like this:
         │       └── 0000001.bin
         ├── pi3det_infos_train.pkl
         └── pi3det_infos_val.pkl
+    ```
+### Source training
+
+The purpose of Cross Platform is like an Unsupervised Domain Adaptation (UDA) task is to learn a generalized model or backbone $F$ on a labeled source platform $s$ and an unlabeled target platform $t$, such that the $F$ can be adapted to the new target platform $t$, where unlabeled training data (such as point cloud or images) from the target platform $t$ are assumed to be available during the adaptation process.
+
+> Here, we take Phase1: Vehicle-to-Drone adaptation as an example. We use PVRCNN as our base detector.
+
+* Train FEAT=3 (X,Y,Z) using multiple GPUs
+```shell script
+bash scripts/dist_train.sh ${NUM_GPUs} \
+--cfg_file ./cfgs/DA/phase1_vehicle_drone/source_only/pvrcnn_source.yaml
+```
+
+* Train FEAT=3 (X,Y,Z) using single GPU
+```shell script
+python train.py --cfg_file ./cfgs/DA/phase1_vehicle_drone/source_only/pvrcnn_source.yaml
+```
+
+### Adaptation stage: self-training the source-platform on the unlabeled target-platform:
+
+> Here, we take Phase1: Vehicle-to-Drone adaptation as an example. We use [ST3D](https://arxiv.org/abs/2103.05346) as our baseline method.
+
+* Train FEAT=3 (X,Y,Z) using multiple GPUs
+```shell script
+sh scripts/UDA/dist_train_uda.sh ${NUM_GPUs} \
+--cfg_file ./cfgs/DA/phase1_vehicle_drone/st3d/pvrcnn_st3d.yaml \
+--pretrained_model ${PRETRAINED_MODEL}
+```
+
+* Train FEAT=3 (X,Y,Z) using single GPU
+```shell script
+python train_uda.py \
+--cfg_file ./cfgs/DA/phase1_vehicle_drone/st3d/pvrcnn_st3d.yaml \
+--pretrained_model ${PRETRAINED_MODEL}
+```
+
+`$PRETRAINED_MODEL` is pretrained from source platform in [Source training](#source-training).
+
+### Evaluating the model on the target platform
+
+The validation set for this track **does not** include annotation files. All results must be submitted and evaluated through the competition submission website. We have lifted any rate limits on validation submissions so you can evaluate as often as needed.
+
+
+* Test with a ckpt file: 
+```shell script
+python test.py \
+--cfg_file ${CONFIG_FILE} \
+--batch_size ${BATCH_SIZE} \
+--ckpt ${CKPT}
+```
+
+* To test all the saved checkpoints of a specific training setting and draw the performance curve on the Tensorboard, add the `--eval_all` argument: 
+```shell script
+python test.py \
+--cfg_file ${CONFIG_FILE} \
+--batch_size ${BATCH_SIZE} \
+--eval_all
+```
+
+* To test with multiple GPUs:
+```shell script
+sh scripts/dist_test.sh ${NUM_GPUs} \ 
+--cfg_file ${CONFIG_FILE} \
+--batch_size ${BATCH_SIZE} \
+--ckpt ${CKPT}
+```
+
+* To test all ckpts with multiple GPUs
+```shell script
+sh scripts/dist_test.sh ${NUM_GPUs} \
+--cfg_file ${CONFIG_FILE} \
+--batch_size ${BATCH_SIZE} \
+--eval_all
+```
+
+Once testing completes, you will find a `result.pkl` file in your output directory. This file is your submission payload for the leaderboard.
+
+&ensp;
+&ensp;
+## Baseline Results:
+We report the cross-platform adaptation results including phase1 and phase2.
+* All LiDAR-based models are trained with 2 NVIDIA T8 GPUs and are available for download. 
+* The platform adaptation time is measured with 2 NVIDIA T8 GPUs and PyTorch 2.1.0-cu118.
+### Phase1 results:
+
+|                                              | Adaptation | Car@R40   | download | 
+|--------------------------------------------- |:-------:|:-------:|:---------:|
+| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | Source-only | 74.42 / 40.35 | - |
+| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | ST3D | 74.42 / 40.35 | - |
+| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | ST3D++ | 74.42 / 40.35 | - |
+
+下面开始新一节， 帮我根据提供的材料，补充，完善，规范这一节，用英语，md语法：
+## Visualization Tools for Track5
+We provide a lightweight UI to help you **interactively explore** the dataset and your model’s predictions. Before you begin, make sure you have downloaded and linked the data as described in [Getting Started](#getting-started).
+
+### 1. Launch the UI
+
+Run the following command in your project root:
+
+```bash
+python ./vis_tools/active_window.py
+```
+
+<div align="center">
+    <img src="./docs/UI.png" alt="Track 5 Image" class="img-hover-effect" style="max-width: 60%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
+
+### 2. Load the Dataset
+  * Select Split
+    * Use the dropdown menu at the top to choose **training** or **validation**.
+  * Click Load Dataset
+  * Inspect Views
+    * Left panel: front-view RGB image
+    * Right panel: LiDAR point cloud (FOV region)
+    * Ground-truth 3D boxes are overlaid on LiDAR view.
+
+<div align="center">
+    <img src="./docs/UI_sample.png" alt="Track 5 Image" class="img-hover-effect" style="max-width: 60%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
+
+### 3. Visualize Prediction Results
+* After testing, locate the `result.pkl` file in your output directory.
+* Click Load Anno and select `result.pkl`.
+* Predicted 3D bounding boxes will appear on point-cloud panels.
+
+## Acknowledge
+* Our code is heavily based on [OpenPCDet v0.5.2](https://github.com/open-mmlab/OpenPCDet). Thanks OpenPCDet Development Team for their awesome codebase.
+
+* Our baselines are heavily based on [Project Link](https://bobrown.github.io/Team_3DTrans.github.io/). Thanks 3DTrans Development Team for their awesome codebase.
