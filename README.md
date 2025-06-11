@@ -40,7 +40,7 @@ The Cross-Platform Track is structured into two consecutive phases:
 **Setup:**  
 - **Source domain:** Vehicle LiDAR scans **with** 3D bounding-box annotations  
 - **Target domain:** Unlabeled Drone LiDAR scans  
-**Ranking metric:** AP@0.7 for the **Car** class evaluated on Drone data  
+**Ranking metric:** AP@0.50 (R40) for the **Car** class evaluated on Drone data  
 
 ---
 
@@ -50,8 +50,8 @@ The Cross-Platform Track is structured into two consecutive phases:
 - **Source domain:** Vehicle LiDAR scans with annotations  
 - **Target domains:** Unlabeled Drone and Quadruped LiDAR scans  
 **Ranking metric:** Weighted score combining:  
-  - AP@0.7 for the **Car** class  
-  - AP@0.5 for the **Pedestrian** class  
+  - AP@0.50 (R40)  for the **Car** class  
+  - AP@0.25 (R40)  for the **Pedestrian** class  
   (Scores computed across both Drone and Quadruped platforms.)  
 
 ## Installation
