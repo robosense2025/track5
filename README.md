@@ -219,12 +219,12 @@ We report the cross-platform adaptation results including phase1 and phase2.
 
 |                                              | Adaptation | Car AP0.7@R40 | Car AP0.5@R40 | download | 
 |--------------------------------------------- |:-------:|:-------:|:-------:|:---------:|
-| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | Source-only | 35.04 / 18.15 |40.81 / 35.89 | - |
-| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | ST3D        | 42.09 / 24.20 |45.53 / 39.59 | - |
-| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | ST3D++ | 74.42 / 40.35 |74.42 / 40.35 | - |
+| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | Source-only | 34.60 / 16.31 |40.67 / **33.70** | - |
+| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | ST3D        | 47.81 / 26.03 |53.40 / **46.64** | - |
+| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | ST3D++      | 45.96 / 25.37 |52.65 / **45.07** | - |
 
 ## Visualization Tools for Track5
-We provide a lightweight UI to help you **interactively explore** the dataset and your model’s predictions. Before you begin, make sure you have downloaded and linked the data as described in [Getting Started](#getting-started).
+We provide a lightweight UI to help you **interactively explore** the dataset and your model's predictions. Before you begin, make sure you have downloaded and linked the data as described in [Getting Started](#getting-started).
 
 ### 1. Launch the UI
 
