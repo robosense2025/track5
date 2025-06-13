@@ -56,7 +56,7 @@ The Cross-Platform Track is structured into two consecutive phases:
 
 ## Installation
 
-This track is developed on top of the popular 3D detection codebase [OpenPCDet](https://github.com/open-mmlab/OpenPCDet). To avoid build failures, **make sure your CUDA version matches your PyTorch installation** before proceeding.
+This track is developed on top of the popular 3D detection codebase [OpenPCDet](https://github.com/open-mmlab/OpenPCDet). To avoid build failures, **make sure your CUDA version matches your PyTorch installation** before proceeding. All the installation and testing process had beed tested with `PyTorch 2.1.0-cu118` on `Ubuntu 22.04`.
 
 1. **Clone the repository**  
    ```bash
@@ -207,7 +207,7 @@ sh scripts/dist_test.sh ${NUM_GPUs} \
 --eval_all
 ```
 
-Once testing completes, you will find a `result.pkl` file in your output directory. This file is your submission payload for the leaderboard.
+Once testing completes, you will find a `result.pkl` file in your output directory. Please compress the file directly to `result.zip`  and this file is your submission payload for the leaderboard.
 
 &ensp;
 &ensp;
@@ -219,9 +219,18 @@ We report the cross-platform adaptation results including phase1 and phase2.
 
 |                                              | Adaptation | Car AP0.7@R40 | Car AP0.5@R40 | download | 
 |--------------------------------------------- |:-------:|:-------:|:-------:|:---------:|
-| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | Source-only | 34.60 / 16.31 |40.67 / **33.70** | - |
-| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | ST3D        | 47.81 / 26.03 |53.40 / **46.64** | - |
-| [PV-RCNN](../tools/cfgs/DA/waymo_kitti/source_only/pvrcnn_feat_3_vehi.yaml) | ST3D++      | 45.96 / 25.37 |52.65 / **45.07** | - |
+| [PV-RCNN](tools/cfgs/DA/phase1_vehicle_drone/source_only/pvrcnn_source.yaml) | Source-only | 34.60 / 16.31 |40.67 / **33.70** | [checkpoint](https://huggingface.co/datasets/robosense/datasets/blob/main/track5-cross-platform-3d-object-detection/pretrained/pvrcnn_source.pth) |
+| [PV-RCNN](tools/cfgs/DA/phase1_vehicle_drone/st3d/pvrcnn_st3d.yaml) | ST3D        | 47.81 / 26.03 |53.40 / **46.64** | [checkpoint](https://huggingface.co/datasets/robosense/datasets/blob/main/track5-cross-platform-3d-object-detection/pretrained/pvrcnn_st3d.pth) |
+| [PV-RCNN](tools/cfgs/DA/phase1_vehicle_drone/st3d++/pvrcnn_st3d++.yaml) | ST3D++      | 45.96 / 25.37 |52.65 / **45.07** | [checkpoint](https://huggingface.co/datasets/robosense/datasets/blob/main/track5-cross-platform-3d-object-detection/pretrained/pvrcnn_st3d.pth) |
+
+<p>
+    Beyond the provided baseline, participants are encouraged to explore alternative strategies to further boost cross-platform performance:
+</p>
+<ul>
+    <li>Treat the cross-platform challenge as a domain adaptation problem by improving pseudo-label quality and fine-tuning on target-platform data.</li>
+    <li>Design novel data augmentation techniques to bridge geometric and feature discrepancies across platforms.</li>
+    <li>Adopt geometry-agnostic 3D detectors, such as point-based architectures, that are less sensitive to platform-specific point-cloud characteristics.</li>
+</ul>
 
 ## Visualization Tools for Track5
 We provide a lightweight UI to help you **interactively explore** the dataset and your model's predictions. Before you begin, make sure you have downloaded and linked the data as described in [Getting Started](#getting-started).
