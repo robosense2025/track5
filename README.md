@@ -139,6 +139,11 @@ The purpose of Cross Platform is like an Unsupervised Domain Adaptation (UDA) ta
 
 > Here, we take Phase1: Vehicle-to-Drone adaptation as an example. We use PVRCNN as our base detector.
 
+* `OpenPCD` use `tools` as project workspace
+```shell script
+cd tools
+```
+
 * Train FEAT=3 (X,Y,Z) using multiple GPUs
 ```shell script
 bash scripts/dist_train.sh ${NUM_GPUs} \
