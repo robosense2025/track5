@@ -99,7 +99,7 @@ We use the **same training set** (vehicle platform) for both phases, but **diffe
     mkdir -p data/pi3det
 
     # Link the training split
-    ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/training \
+    ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/phase12_vehicle_training/training \
         data/pi3det/training
 
     # Link the validation split for Phase 1 (Drone)
@@ -107,9 +107,9 @@ We use the **same training set** (vehicle platform) for both phases, but **diffe
         data/pi3det/validation
 
     # Link the .pkl info files
-    ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/pi3det_infos_train.pkl \
+    ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/phase12_vehicle_training/training/pi3det_infos_train.pkl \
         data/pi3det/pi3det_infos_train.pkl
-    ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/phase1_drone_validation/pi3det_infos_val.pkl \
+    ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/phase1_drone_validation/validation/pi3det_infos_val.pkl \
         data/pi3det/pi3det_infos_val.pkl
 3. **Verify your directory structure**  
 After linking, your `data/` folder should look like this:
@@ -212,7 +212,7 @@ sh scripts/dist_test.sh ${NUM_GPUs} \
 --eval_all
 ```
 
-Once testing completes, you will find a `result.pkl` file in your output directory. Please compress the file directly to `result.zip`  and this file is your submission payload for the leaderboard.
+🌃🌃🌃Once testing completes, you will find a `result.pkl` file in your output directory. Please compress the file directly to `result.zip`  and this file is your submission payload for the leaderboard.
 
 &ensp;
 &ensp;
