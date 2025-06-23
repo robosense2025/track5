@@ -1,31 +1,56 @@
-<div align="center">
-  <img src="docs/logo_track5.png" alt="track5" width="100" height="auto" />
-</div>
-<div align="center">
-
-# The <a style="color: #ffc000;">Robo</a><a style="color: #76b900;">Sense</a> Challenge 2025
-## Track <a style="color: #76b900;">#5</a>: Cross-Platform 3D Object Detection
-</div>
+# 🤖 RoboSense Track 5: Cross-Platform 3D Object Detection
 
 <div align="center">
-    <img src="./docs/teaser.png" alt="Track 5 Image" class="img-hover-effect" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+
+**Official Baseline Implementation for Track 5**
+
+*Based on Pi3DET -- "Perspective-Invariant 3D Object Detection"*
+
+[![RoboSense Challenge](https://img.shields.io/badge/RoboSense-2025-blue)](https://robosense2025.github.io/)
+[![Track](https://img.shields.io/badge/Track-Drive%20with%20Language-green)](https://robosense2025.github.io/track5)
+[![IROS 2025](https://img.shields.io/badge/IROS-2025-red)](https://iros2025.org/)
+[![CodaBench](https://img.shields.io/badge/CodaBench-Submit-purple)](https://www.codabench.org/competitions/9179/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-yellow)](LICENSE)
+
+**🏆 Prize Pool: $2,000 USD for Track 5 Winners**
+
+<p align="center">
+  <img src="docs/figures/track5.jpg" align="center" width="60%">
+</p>
+
 </div>
 
-## Overview
 
-- [Overview](#Overview)
-- [News](#News)
-- [Phases](#Phases)
-- [Installation](#installation)
-- [Getting Started](#getting-started)
-- [Baseline Results](#baseline-results)
-- [Visualization Tools for Track5](#visualization-tools-for-track5)
-- [Acknowledge](#acknowledge)
+## Challenge Overview
 
-## News
-- [2025-06-12]: The RoboSense Challenge is online.
+**Track 5: Cross-Platform 3D Object Detection** focuses on the development of robust 3D object detectors that can seamlessly adapt across different robot platforms, including vehicles, drones, and quadrupeds.
 
-## Phases
+Participants are expected to develop new adaptation algorithms that can effectively adapt 3D perception tasks, specifically object detection, across three robot platforms that use different sensor configurations and movement dynamics. The models are expected to be trained using vehicle data, and achieve promising performance on drone and quadruped platforms.
+
+<div align="center">
+    <img src="./docs/teaser.png" align="center" width="99%">
+</div>
+
+
+## Competition Details
+
+- **Venue**: IROS 2025, Hangzhou (Oct 19-25, 2025)
+- **Registration**: [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSdwfvk-NHdQh9-REiBLCjHMcyLT-sPCOCzJU-ux5jbcZLTkBg/viewform) (Open until Aug 15)
+- **Contact**: robosense2025@gmail.com
+
+
+### 🏆 **Awards**
+
+| Prize | Award |
+|:-|:-|
+| 🥇 1st Place | $1000 + Certificate |
+| 🥈 2nd Place | $600 + Certificate |
+| 🥉 3rd Place | $400 + Certificate |
+| 🌟 Innovation Award | Cash Award + Certificate |
+| Participation | Certificate |
+
+
+### Phases
 
 <!-- | Phase                                        | Duration                    | Source Domain                                  | Target Domain                                | Ranking Metric                                                                                   |
 |----------------------------------------------|-----------------------------|------------------------------------------------|-----------------------------------------------|--------------------------------------------------------------------------------------------------|
@@ -35,26 +60,27 @@
 
 The Cross-Platform Track is structured into two consecutive phases:
 
-### Phase 1: Vehicle → Drone Adaptation  
-**Duration:** 15 June 2025 – 15 August 2025  
-**Setup:**  
-- **Source domain:** Vehicle LiDAR scans **with** 3D bounding-box annotations  
-- **Target domain:** Unlabeled Drone LiDAR scans  
-**Ranking metric:** AP@0.50 (R40) for the **Car** class evaluated on Drone data  
+#### Phase :one:: Vehicle → Drone Adaptation  
+- **Duration:** 15 June 2025 – 15 August 2025  
+- **Setup:**  
+  - **Source domain:** Vehicle LiDAR scans **with** 3D bounding-box annotations  
+  - **Target domain:** Unlabeled Drone LiDAR scans  
+- **Ranking metric:** AP@0.50 (R40) for the **Car** class evaluated on Drone data  
 
----
 
-### Phase 2: Vehicle → Drone & Quadruped Adaptation  
-**Duration:** 15 August 2025 – 15 October 2025  
-**Setup:**  
-- **Source domain:** Vehicle LiDAR scans with annotations  
-- **Target domains:** Unlabeled Drone and Quadruped LiDAR scans  
-**Ranking metric:** Weighted score combining:  
+#### Phase :two:: Vehicle → Drone & Quadruped Adaptation  
+- **Duration:** 15 August 2025 – 15 October 2025  
+- **Setup:**  
+  - **Source domain:** Vehicle LiDAR scans with annotations  
+  - **Target domains:** Unlabeled Drone and Quadruped LiDAR scans  
+- **Ranking metric:** Weighted score combining:  
   - AP@0.50 (R40)  for the **Car** class  
   - AP@0.25 (R40)  for the **Pedestrian** class  
   (Scores computed across both Drone and Quadruped platforms.)  
 
-## Installation
+
+
+## :gear: Installation
 
 This track is developed on top of the popular 3D detection codebase [OpenPCDet](https://github.com/open-mmlab/OpenPCDet). To avoid build failures, **make sure your CUDA version matches your PyTorch installation** before proceeding. All the installation and testing process had beed tested with `PyTorch 2.1.0-cu118` on `Ubuntu 22.04`.
 
@@ -74,6 +100,8 @@ This track is developed on top of the popular 3D detection codebase [OpenPCDet](
    ```bash
    pip list | grep pcdet
 If you run into any installation issues, please open an issue on the GitHub repo or contact us via the WeChat group. Happy coding!
+
+
 
 ## Getting Started
 
@@ -133,7 +161,8 @@ After linking, your `data/` folder should look like this:
         ├── pi3det_infos_train.pkl
         └── pi3det_infos_val.pkl
     ```
-### Source training
+
+### Source Training
 
 The purpose of Cross Platform is like an Unsupervised Domain Adaptation (UDA) task is to learn a generalized model or backbone $F$ on a labeled source platform $s$ and an unlabeled target platform $t$, such that the $F$ can be adapted to the new target platform $t$, where unlabeled training data (such as point cloud or images) from the target platform $t$ are assumed to be available during the adaptation process.
 
@@ -173,9 +202,9 @@ python train_uda.py \
 --pretrained_model ${PRETRAINED_MODEL}
 ```
 
-`$PRETRAINED_MODEL` is pretrained from source platform in [Source training](#source-training).
+`$PRETRAINED_MODEL` is pretrained from the source platform in [Source training](#source-training).
 
-### Evaluating the model on the target platform
+### Evaluating the Model on the Target Platform
 
 The validation set for this track **does not** include annotation files. All results must be submitted and evaluated through the competition submission website. We have lifted any rate limits on validation submissions so you can evaluate as often as needed.
 
@@ -204,7 +233,7 @@ sh scripts/dist_test.sh ${NUM_GPUs} \
 --ckpt ${CKPT}
 ```
 
-* To test all ckpts with multiple GPUs
+* To test all checkpoints with multiple GPUs
 ```shell script
 sh scripts/dist_test.sh ${NUM_GPUs} \
 --cfg_file ${CONFIG_FILE} \
@@ -212,15 +241,16 @@ sh scripts/dist_test.sh ${NUM_GPUs} \
 --eval_all
 ```
 
-🌃🌃🌃Once testing completes, you will find a `result.pkl` file in your output directory. Please compress the file directly to `result.zip`  and this file is your submission payload for the leaderboard.
+Once testing completes, you will find a `result.pkl` file in your output directory. Please compress the file directly to `result.zip`  and this file is your submission payload for the leaderboard.
 
-&ensp;
-&ensp;
+
+
 ## Baseline Results:
-We report the cross-platform adaptation results including phase1 and phase2.
+We report the cross-platform adaptation results, including phase 1 and phase 2.
 * All LiDAR-based models are trained with 2 NVIDIA T8 GPUs and are available for download. 
 * The platform adaptation time is measured with 2 NVIDIA T8 GPUs and PyTorch 2.1.0-cu118.
-### Phase1 results:
+
+### Phase 1 Results:
 
 |                                              | Adaptation | Car AP0.7@R40 | Car AP0.5@R40 | download | 
 |--------------------------------------------- |:-------:|:-------:|:-------:|:---------:|
@@ -240,6 +270,7 @@ We report the cross-platform adaptation results including phase1 and phase2.
 ## Visualization Tools for Track5
 We provide a lightweight UI to help you **interactively explore** the dataset and your model's predictions. Before you begin, make sure you have downloaded and linked the data as described in [Getting Started](#getting-started).
 
+
 ### 1. Launch the UI
 
 Run the following command in your project root:
@@ -249,8 +280,9 @@ python ./vis_tools/active_window.py
 ```
 
 <div align="center">
-    <img src="./docs/UI.png" alt="Track 5 Image" class="img-hover-effect" style="max-width: 60%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+    <img src="./docs/UI.png" align="left" width="60%">
 </div>
+
 
 ### 2. Load the Dataset
   * Select Split
@@ -259,18 +291,86 @@ python ./vis_tools/active_window.py
   * Inspect Views
     * Left panel: front-view RGB image
     * Right panel: LiDAR point cloud (FOV region)
-    * Ground-truth 3D boxes are overlaid on LiDAR view.
+    * Ground-truth 3D boxes are overlaid on the LiDAR view.
 
 <div align="center">
-    <img src="./docs/UI_sample.png" alt="Track 5 Image" class="img-hover-effect" style="max-width: 60%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+    <img src="./docs/UI_sample.png" align="left" width="60%">
 </div>
+
 
 ### 3. Visualize Prediction Results
 * After testing, locate the `result.pkl` file in your output directory.
 * Click Load Anno and select `result.pkl`.
 * Predicted 3D bounding boxes will appear on point-cloud panels.
 
-## Acknowledge
-* Our code is heavily based on [OpenPCDet v0.5.2](https://github.com/open-mmlab/OpenPCDet). Thanks OpenPCDet Development Team for their awesome codebase.
 
-* Our baselines are heavily based on [Project Link](https://bobrown.github.io/Team_3DTrans.github.io/). Thanks 3DTrans Development Team for their awesome codebase.
+
+
+
+### Timeline
+- **Registration**: [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSdwfvk-NHdQh9-REiBLCjHMcyLT-sPCOCzJU-ux5jbcZLTkBg/viewform)
+- **Phase 1 Deadline**: August 15th
+- **Phase 2 Deadline**: September 15th
+- **Awards Announcement**: IROS 2025
+
+
+## 🔗 Resources
+
+- **Challenge Website**: [robosense2025.github.io](https://robosense2025.github.io/)
+- **Track Details**: [Track 5 Page](https://robosense2025.github.io/track5)
+- **Related Paper**: 
+
+
+## 📧 Contact & Support
+
+- **Email**: robosense2025@gmail.com
+- **Official Website**: https://robosense2025.github.io
+- **Issues**: Please use GitHub Issues for technical questions
+
+
+## 📄 Citation
+
+If you use the code and dataset in your research, please cite:
+
+```bibtex
+@inproceedings{liang2025pi3det,
+  title = {Perspective-Invariant 3D Object Detection},
+  author = {},
+  booktitle = {},
+  pages = {},
+  year = {2025},
+}
+```
+
+
+
+
+
+## Acknowledgements
+
+### RoboSense 2025 Challenge Organizers
+
+<p align="center">
+  <img src="docs/figures/organizers.jpg" align="center" width="99%">
+</p>
+
+
+### RoboSense 2025 Program Committee
+
+<p align="center">
+  <img src="docs/figures/organizers2.jpg" align="center" width="99%">
+</p>
+
+
+
+---
+
+<div align="center">
+
+**🤖 Ready to sense the world robustly? Register now and compete for $2,000!**
+
+[**📝 Register Here**](https://docs.google.com/forms/d/e/1FAIpQLSdwfvk-NHdQh9-REiBLCjHMcyLT-sPCOCzJU-ux5jbcZLTkBg/viewform) | [**🌐 Challenge Website**](https://robosense2025.github.io/) | [**📧 Contact Us**](mailto:robosense2025@gmail.com)
+
+Made with ❤️ by the RoboSense 2025 Team
+
+</div>
