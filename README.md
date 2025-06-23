@@ -280,8 +280,9 @@ python ./vis_tools/active_window.py
 ```
 
 <div align="center">
-    <img src="./docs/UI.png" align="left" width="60%">
+    <img src="./docs/UI.png" align="center" width="60%">
 </div>
+
 
 
 ### 2. Load the Dataset
@@ -294,8 +295,9 @@ python ./vis_tools/active_window.py
     * Ground-truth 3D boxes are overlaid on the LiDAR view.
 
 <div align="center">
-    <img src="./docs/UI_sample.png" align="left" width="60%">
+    <img src="./docs/UI_sample.png" align="center" width="60%">
 </div>
+
 
 
 ### 3. Visualize Prediction Results
