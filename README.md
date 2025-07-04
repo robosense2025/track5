@@ -23,6 +23,7 @@
 - [Acknowledge](#acknowledge)
 
 ## News
+- [2025-07-04]: We have fixed the bug of 'mot_3d'
 - [2025-06-12]: The RoboSense Challenge is online.
 
 ## Phases
