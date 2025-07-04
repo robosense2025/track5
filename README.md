@@ -23,13 +23,10 @@
 
 ## Challenge Overview
 
-<<<<<<< HEAD
 ## News
 - [2025-07-04]: We have fixed the bug of 'mot_3d'
 - [2025-06-12]: The RoboSense Challenge is online.
-=======
 **Track 5: Cross-Platform 3D Object Detection** focuses on the development of robust 3D object detectors that can seamlessly adapt across different robot platforms, including vehicles, drones, and quadrupeds.
->>>>>>> 490c038a1070a07b92df7cd9e8e9973c2b1a7aa5
 
 Participants are expected to develop new adaptation algorithms that can effectively adapt 3D perception tasks, specifically object detection, across three robot platforms that use different sensor configurations and movement dynamics. The models are expected to be trained using vehicle data, and achieve promising performance on drone and quadruped platforms.
 
