@@ -4,7 +4,7 @@
 
 **Official Baseline Implementation for Track 5**
 
-*Based on Pi3DET -- "Perspective-Invariant 3D Object Detection"*
+*Based on Pi3DET -- "Perspective-Invariant 3D Object Detection"*<br>(https://github.com/pi3det/toolkit)
 
 [![RoboSense Challenge](https://img.shields.io/badge/RoboSense-2025-blue)](https://robosense2025.github.io/)
 [![Track](https://img.shields.io/badge/Track-Drive%20with%20Language-green)](https://robosense2025.github.io/track5)
