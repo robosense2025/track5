@@ -1,4 +1,5 @@
-# 🤖 RoboSense Track 5: Cross-Platform 3D Object Detection
+<h1 align="center">🤖 RoboSense Track 5:<br>Cross-Platform 3D Object Detection</h1>
+
 
 <div align="center">
 
