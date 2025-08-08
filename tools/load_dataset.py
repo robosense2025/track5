@@ -7,7 +7,8 @@ Usage:
 """
 
 import argparse
-from huggingface_hub import snapshot_download
+from huggingface_hub import snapshot_download, login
+import time, sys
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -40,17 +41,47 @@ def parse_args():
     )
     return parser.parse_args()
 
+def robust_snapshot_download(repo_id, revision, output_dir, subfolder="", use_symlinks=False, token=None, max_tries=5):
+    if token:
+        login(token=token)
+
+    patterns = []
+    if subfolder:
+        patterns = [f"{subfolder}/*", f"{subfolder}/**"]
+    else:
+        patterns = ["**"]  # whole repo
+
+    for attempt in range(1, max_tries+1):
+        try:
+            snapshot_download(
+                repo_id=repo_id,
+                repo_type="dataset",
+                revision=revision,
+                local_dir=output_dir,
+                local_dir_use_symlinks=use_symlinks,
+                allow_patterns=patterns,
+                max_workers=8,   # speed + some robustness
+                # force_download=False (default) will resume if partial cache exists
+            )
+            print("Download complete.")
+            return
+        except Exception as e:
+            print(f"[Attempt {attempt}/{max_tries}] {type(e).__name__}: {e}")
+            if attempt == max_tries:
+                raise
+            time.sleep(min(30, 5*attempt))
+
 def main():
     args = parse_args()
 
     print(f"Downloading '{args.subfolder}' from '{args.repo_id}@{args.revision}' into '{args.output_dir}'...")
-    snapshot_download(
+    robust_snapshot_download(
         repo_id=args.repo_id,
-        repo_type="dataset",
         revision=args.revision,
-        local_dir=args.output_dir,
-        local_dir_use_symlinks=args.use_symlinks,
-        allow_patterns=[f"{args.subfolder}/*", f"{args.subfolder}/**"],
+        output_dir=args.output_dir,
+        subfolder=args.subfolder,
+        use_symlinks=args.use_symlinks,
+        token=None,  # or os.environ["HUGGINGFACE_HUB_TOKEN"]
     )
     print("Download complete.")
 
