@@ -135,13 +135,13 @@ We use the **same training set** (vehicle platform) for both phases, but **diffe
         data/pi3det/training
 
     # Link the validation split for Phase 1 (Drone)
-    ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/phase1_drone_validation/validation \
+    ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/phase{$N}_{$PLATFORM}_validation/validation \
         data/pi3det/validation
 
     # Link the .pkl info files
     ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/phase12_vehicle_training/training/pi3det_infos_train.pkl \
         data/pi3det/pi3det_infos_train.pkl
-    ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/phase1_drone_validation/validation/pi3det_infos_val.pkl \
+    ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/phase{$N}_{$PLATFORM}_validation/pi3det_infos_val.pkl \
         data/pi3det/pi3det_infos_val.pkl
 3. **Verify your directory structure**  
 After linking, your `data/` folder should look like this:
@@ -339,12 +339,11 @@ python ./vis_tools/active_window.py
 If you use the code and dataset in your research, please cite:
 
 ```bibtex
-@inproceedings{liang2025pi3det,
-  title = {Perspective-Invariant 3D Object Detection},
-  author = {},
-  booktitle = {},
-  pages = {},
-  year = {2025},
+@article{liang2025perspective,
+  title={Perspective-Invariant 3D Object Detection},
+  author={Liang, Ao and Kong, Lingdong and Lu, Dongyue and Liu, Youquan and Fang, Jian and Zhao, Huaici and Ooi, Wei Tsang},
+  journal={arXiv preprint arXiv:2507.17665},
+  year={2025}
 }
 ```
 
