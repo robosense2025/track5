@@ -124,6 +124,8 @@ We use the **same training set** (vehicle platform) for both phases, but **diffe
 
 1. **Download the dataset**  
    ```bash
+   # export your huggingface token: hf_xxx
+   export HUGGINGFACE_TOKEN=${TOKEN} 
    python tools/load_dataset.py $USER_DEFINE_OUTPUT_PATH
 2. **Link data into the project**  
    ```bash
