@@ -50,7 +50,7 @@ def main():
         revision=args.revision,
         local_dir=args.output_dir,
         local_dir_use_symlinks=args.use_symlinks,
-        allow_patterns=[ f"{args.subfolder}/*" ],
+        allow_patterns=[f"{args.subfolder}/*", f"{args.subfolder}/**"],
     )
     print("Download complete.")
 
