@@ -1,147 +1,105 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 """
-download_track5.py - Improved version with better rate limit handling
+Download a subfolder from a Hugging Face dataset repo to a user-specified path.
+
+Repo:    robosense/datasets  (repo_type=dataset)
+Subdir:  track5-cross-platform-3d-object-detection
+Usage:
+    python download_track5.py /path/to/save
+
+Optionally:
+    HUGGINGFACE_TOKEN=hf_xxx python download_track5.py /path/to/save
 """
 
 import argparse
-from huggingface_hub import snapshot_download, login, HfFileSystem
-from huggingface_hub.utils import LocalEntryNotFoundError, HfHubHTTPError
-import time
 import os
-import sys
+import shutil
+from pathlib import Path
+from typing import Optional
 
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description="Download the track5-cross-platform-3d-object-detection subfolder "
-                    "from the robosense/datasets Hugging Face repo."
-    )
-    parser.add_argument(
-        "output_dir",
-        help="Local directory where files will be saved"
-    )
-    parser.add_argument(
-        "--repo-id",
-        default="robosense/datasets",
-        help="Hugging Face dataset repo id (default: %(default)s)"
-    )
-    parser.add_argument(
-        "--revision",
-        default="main",
-        help="Branch or commit to download from (default: %(default)s)"
-    )
-    parser.add_argument(
-        "--subfolder",
-        default="track5-cross-platform-3d-object-detection",
-        help="Subfolder in the repo to download (default: %(default)s)"
-    )
-    parser.add_argument(
-        "--token",
-        help="Hugging Face authentication token (get from https://huggingface.co/settings/tokens)"
-    )
-    parser.add_argument(
-        "--clean",
-        action="store_true",
-        help="Clean existing directory before download"
-    )
-    return parser.parse_args()
+from huggingface_hub import snapshot_download
 
-def check_repo_access(repo_id, token=None, max_retries=3):
-    fs = HfFileSystem(token=token)
-    for attempt in range(max_retries):
-        try:
-            # Just try listing the root to check access
-            fs.ls(repo_id, maxdepth=1)
-            return True
-        except HfHubHTTPError as e:
-            if e.response.status_code == 429:
-                wait = min(60, (attempt + 1) * 20)
-                print(f"Rate limited. Waiting {wait} seconds before checking access again...")
-                time.sleep(wait)
-            else:
-                raise
-    return False
 
-def robust_download(repo_id, revision, output_dir, subfolder="", token=None, clean=False, max_tries=5):
-    if clean and os.path.exists(output_dir):
-        print(f"Cleaning existing directory: {output_dir}")
-        for root, dirs, files in os.walk(output_dir, topdown=False):
-            for name in files:
-                os.remove(os.path.join(root, name))
-            for name in dirs:
-                os.rmdir(os.path.join(root, name))
+REPO_ID = "robosense/datasets"
+REPO_TYPE = "dataset"
+SUBFOLDER = "track5-cross-platform-3d-object-detection"
 
-    if not check_repo_access(repo_id, token):
-        raise RuntimeError("Could not establish connection to Hugging Face Hub after multiple attempts")
 
-    patterns = [f"{subfolder}/*"] if subfolder else ["*"]
-    
-    for attempt in range(1, max_tries + 1):
-        try:
-            snapshot_download(
-                repo_id=repo_id,
-                repo_type="dataset",
-                revision=revision,
-                local_dir=output_dir,
-                allow_patterns=patterns,
-                resume_download=True,
-                token=token,
-                max_workers=4,  # Reduced to be gentler on servers
-                local_dir_use_symlinks="auto",
-                ignore_patterns=["*.md", "*.txt"],  # Skip documentation files if they cause issues
-            )
-            return True
-        except LocalEntryNotFoundError as e:
-            print(f"[Attempt {attempt}/{max_tries}] Cache error: {e}")
-            if attempt == max_tries:
-                raise
-            time.sleep(10 * attempt)
-        except HfHubHTTPError as e:
-            if e.response.status_code == 429:
-                wait = min(300, 30 * (attempt + 1))
-                print(f"[Attempt {attempt}/{max_tries}] Rate limited. Waiting {wait} seconds...")
-                time.sleep(wait)
-            else:
-                print(f"[Attempt {attempt}/{max_tries}] HTTP Error: {e}")
-                if attempt == max_tries:
-                    raise
-                time.sleep(20)
-        except Exception as e:
-            print(f"[Attempt {attempt}/{max_tries}] Unexpected error: {e}")
-            if attempt == max_tries:
-                raise
-            time.sleep(30)
-    return False
+def download_track5(dest_dir: str,
+                    revision: Optional[str] = None,
+                    token: Optional[str] = None) -> Path:
+    """
+    下载 Hugging Face 数据集 robosense/datasets 中的
+    track5-cross-platform-3d-object-detection 子目录到 dest_dir。
+
+    Parameters
+    ----------
+    dest_dir : str
+        想保存到的本地路径（若不存在会创建）。
+    revision : Optional[str]
+        可选的版本（如特定分支名/commit/tag），默认最新。
+    token : Optional[str]
+        若需要私有读取权限，可传入 HF token（否则可用环境变量 HUGGINGFACE_TOKEN）。
+
+    Returns
+    -------
+    Path
+        实际保存数据的本地目录路径（dest_dir/SUBFOLDER）。
+    """
+    dest_dir = Path(dest_dir).expanduser().resolve()
+    dest_dir.mkdir(parents=True, exist_ok=True)
+
+    # 只下载目标子目录（包括其下所有文件/子目录）
+    cache_dir = snapshot_download(
+        repo_id=REPO_ID,
+        repo_type=REPO_TYPE,
+        allow_patterns=[f"{SUBFOLDER}/**"],
+        revision=revision,
+        token=token,
+        # 把实际文件放到普通目录而不是建立到 cache 的符号链接，便于直接使用/移动
+        local_dir=None,
+        local_dir_use_symlinks=False,
+    )
+
+    # snapshot_download 返回的是整个（受 allow_patterns 过滤后的）快照根目录
+    src = Path(cache_dir) / SUBFOLDER
+    if not src.exists():
+        raise FileNotFoundError(
+            f"子目录未在快照中找到：{src}。请检查 allow_patterns 或仓库结构是否变化。"
+        )
+
+    out_dir = dest_dir / SUBFOLDER
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # 将缓存中的子目录复制/同步到目标路径
+    # 若目标已存在则合并覆盖（Python 3.8+）
+    for root, dirs, files in os.walk(src):
+        rel = Path(root).relative_to(src)
+        (out_dir / rel).mkdir(parents=True, exist_ok=True)
+        for f in files:
+            src_f = Path(root) / f
+            dst_f = out_dir / rel / f
+            # 若文件已存在则覆盖
+            shutil.copy2(src_f, dst_f)
+
+    return out_dir
+
 
 def main():
-    args = parse_args()
+    parser = argparse.ArgumentParser(
+        description=f"Download {REPO_ID}/{SUBFOLDER} to a local path.")
+    parser.add_argument("dest", help="下载保存到的目录（会自动创建）")
+    parser.add_argument("--revision", default=None,
+                        help="可选：指定分支/tag/commit（默认最新）")
+    parser.add_argument("--token", default=None,
+                        help="可选：HF 访问令牌（也可用环境变量 HUGGINGFACE_TOKEN）")
+    args = parser.parse_args()
 
-    print(f"Downloading '{args.subfolder}' from '{args.repo_id}@{args.revision}'...")
-    print(f"Target directory: {args.output_dir}")
-    
-    os.makedirs(args.output_dir, exist_ok=True)
-    
-    try:
-        success = robust_download(
-            repo_id=args.repo_id,
-            revision=args.revision,
-            output_dir=args.output_dir,
-            subfolder=args.subfolder,
-            token=args.token,
-            clean=args.clean
-        )
-        
-        if success:
-            print("Download completed successfully.")
-            sys.exit(0)
-        else:
-            print("Download failed after multiple attempts.")
-            sys.exit(1)
-    except KeyboardInterrupt:
-        print("\nDownload interrupted by user.")
-        sys.exit(1)
-    except Exception as e:
-        print(f"Fatal error: {str(e)}")
-        sys.exit(1)
+    out_dir = download_track5(args.dest, revision=args.revision, token=args.token)
+    print(f"✅ 下载完成，已保存到：{out_dir}")
+
 
 if __name__ == "__main__":
     main()
