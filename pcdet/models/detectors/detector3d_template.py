@@ -372,8 +372,9 @@ class Detector3DTemplate(nn.Module):
             if strict:
                 self.load_state_dict(spconv_matched_state)
             else:
-                state_dict.update(spconv_matched_state)
-                self.load_state_dict(state_dict)
+                # state_dict.update(spconv_matched_state)
+                # self.load_state_dict(state_dict)
+                self.load_state_dict(spconv_matched_state)
         elif strict:
             self.load_state_dict(update_model_state)
         else:
