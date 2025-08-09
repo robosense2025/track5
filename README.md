@@ -197,14 +197,14 @@ python train.py --cfg_file ./cfgs/DA/phase1_vehicle_drone/source_only/pvrcnn_sou
 * Train FEAT=3 (X,Y,Z) using multiple GPUs
 ```shell script
 sh scripts/UDA/dist_train_uda.sh ${NUM_GPUs} \
---cfg_file ./cfgs/DA/phase1_vehicle_drone/st3d/pvrcnn_st3d.yaml \
+--cfg_file ./cfgs/DA/phase{$N}_vehicle_{$PLATFORM}/st3d/pvrcnn_st3d.yaml \
 --pretrained_model ${PRETRAINED_MODEL}
 ```
 
 * Train FEAT=3 (X,Y,Z) using single GPU
 ```shell script
 python train_uda.py \
---cfg_file ./cfgs/DA/phase1_vehicle_drone/st3d/pvrcnn_st3d.yaml \
+--cfg_file ./cfgs/DA/phase{$N}_vehicle_{$PLATFORM}/st3d/pvrcnn_st3d.yaml \
 --pretrained_model ${PRETRAINED_MODEL}
 ```
 
