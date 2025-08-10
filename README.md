@@ -79,8 +79,10 @@ The Cross-Platform Track is structured into two consecutive phases:
   - **Target domains:** Unlabeled Drone and Quadruped LiDAR scans  
 - **Ranking metric:** Weighted score combining:  
   - AP@0.50 (R40)  for the **Car** class  
-  - AP@0.25 (R40)  for the **Pedestrian** class  
+  - AP@0.50 (R40)  for the **Pedestrian** class  
   (Scores computed across both Drone and Quadruped platforms.)  
+
+More ranking details are shown at [Ranking](./docs/evaluation.md).
 
 
 
@@ -263,6 +265,15 @@ We report the cross-platform adaptation results, including phase 1 and phase 2.
 | [PV-RCNN](tools/cfgs/DA/phase1_vehicle_drone/source_only/pvrcnn_source.yaml) | Source-only | 34.60 / 16.31 |40.67 / **33.70** | [checkpoint](https://huggingface.co/datasets/robosense/datasets/blob/main/track5-cross-platform-3d-object-detection/pretrained/pvrcnn_source.pth) |
 | [PV-RCNN](tools/cfgs/DA/phase1_vehicle_drone/st3d/pvrcnn_st3d.yaml) | ST3D        | 47.81 / 26.03 |53.40 / **46.64** | [checkpoint](https://huggingface.co/datasets/robosense/datasets/blob/main/track5-cross-platform-3d-object-detection/pretrained/pvrcnn_st3d.pth) |
 | [PV-RCNN](tools/cfgs/DA/phase1_vehicle_drone/st3d++/pvrcnn_st3d++.yaml) | ST3D++      | 45.96 / 25.37 |52.65 / **45.07** | [checkpoint](https://huggingface.co/datasets/robosense/datasets/blob/main/track5-cross-platform-3d-object-detection/pretrained/pvrcnn_st3d.pth) |
+
+### Phase 2 Results:
+
+|                                              | Adaptation | Car AP0.5@R40 | Pedestrian AP0.5@R40 | download | 
+|--------------------------------------------- |:-------:|:-------:|:-------:|:---------:|
+| [PV-RCNN](tools/cfgs/DA/phase2_vehicle_quadruped/source_only/pvrcnn_source.yaml) | Source-only | 26.86 / 22.24 |42.29 / **37.54** | [checkpoint](https://huggingface.co/datasets/robosense/datasets/blob/main/track5-cross-platform-3d-object-detection/pretrained/phase2/pvrcnn_source.pth) |
+| [PV-RCNN](tools/cfgs/DA/phase2_vehicle_quadruped/st3d/pvrcnn_st3d.yaml) | ST3D        | 34.60 / 28.97 |48.68 / **43.51** | [checkpoint](https://huggingface.co/datasets/robosense/datasets/blob/main/track5-cross-platform-3d-object-detection/pretrained/phase2/pvrcnn_st3d.pth) |
+| [PV-RCNN](tools/cfgs/DA/phase2_vehicle_quadruped/st3d++/pvrcnn_st3d++.yaml) | ST3D++      | 32.76 / 28.53 |46.99 / **41.49** | [checkpoint](https://huggingface.co/datasets/robosense/datasets/blob/main/track5-cross-platform-3d-object-detection/pretrained/phase2/pvrcnn_st3d%2B%2B.pth) |
+
 
 <p>
     Beyond the provided baseline, participants are encouraged to explore alternative strategies to further boost cross-platform performance:
