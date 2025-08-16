@@ -138,7 +138,7 @@ We use the **same training set** (vehicle platform) for both phases, but **diffe
     ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/phase12_vehicle_training/training \
         data/pi3det/training
 
-    # Link the validation split for Phase 1 (Drone)
+    # Link the validation split for Phase N (Drone or Quadruped)
     ln -s $USER_DEFINE_OUTPUT_PATH/track5-cross-platform-3d-object-detection/phase{$N}_{$PLATFORM}_validation/validation \
         data/pi3det/validation
 
