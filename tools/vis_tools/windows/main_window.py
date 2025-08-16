@@ -193,13 +193,14 @@ class MainWindow(QWidget):
         self.viewer.addItem(mesh)
 
     def show_boxes(self):
-        boxes_3d = self.data_dict['gt_boxes']
-        box_info = gl.create_boxes(bboxes_3d=boxes_3d)
-        for box_item, l1_item, l2_item in zip(box_info['box_items'], box_info['l1_items'],\
-                                                        box_info['l2_items']):
-            self.viewer.addItem(box_item)
-            self.viewer.addItem(l1_item)
-            self.viewer.addItem(l2_item)
+        if 'gt_boxes' in self.data_dict:
+            boxes_3d = self.data_dict['gt_boxes']
+            box_info = gl.create_boxes(bboxes_3d=boxes_3d)
+            for box_item, l1_item, l2_item in zip(box_info['box_items'], box_info['l1_items'],\
+                                                            box_info['l2_items']):
+                self.viewer.addItem(box_item)
+                self.viewer.addItem(l1_item)
+                self.viewer.addItem(l2_item)
 
         if hasattr(self, 'predict_infos'):
             boxes_3d = self.predict_infos[self.sample_index]['boxes_lidar']

@@ -12,7 +12,7 @@ INFO_PATH: {
     'train': [pi3det_infos_train.pkl],
     'test': [pi3det_infos_val.pkl],
 }
-SHIFT_COOR: [0.0, 0.0, 2.2]
+SHIFT_COOR: [0.0, 0.0, 0.0]
 
 GET_ITEM_LIST: ["points"]
 FOV_POINTS_ONLY: True
