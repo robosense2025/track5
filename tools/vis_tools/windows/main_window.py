@@ -1,14 +1,14 @@
 import os
 import pickle
-import numpy as np
-from loguru import logger
-from utils import common
-from utils import gl_engine as gl
-from pcdet.datasets import PI3DET_Dataset
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QComboBox, QPushButton, QFileDialog,\
                             QLabel, QLineEdit, QListWidget
+import numpy as np
+from pcdet.datasets import PI3DET_Dataset
+from loguru import logger
+from utils import common
+from utils import gl_engine as gl
 
 class CustomListWidget(QListWidget):
 
@@ -58,6 +58,8 @@ class MainWindow(QWidget):
         self.split_select_cbox.addItems([
             'training', 'validation'
         ])
+        # default selection
+        self.dataset_split = 'training'
 
         # load dataset button
         self.load_dataset_button = QPushButton('Load Dataset')
@@ -127,7 +129,7 @@ class MainWindow(QWidget):
         self.dataset = PI3DET_Dataset(
             dataset_cfg=dataset_cfg,
             class_names=['Car', 'Pedestrian'],
-            training=self.dataset_split == 'training',
+            training= (self.dataset_split == 'training'),
             root_path=dataset_cfg.DATA_PATH
         )
         self.frames_count = len(self.dataset)
@@ -204,7 +206,7 @@ class MainWindow(QWidget):
 
         if hasattr(self, 'predict_infos'):
             boxes_3d = self.predict_infos[self.sample_index]['boxes_lidar']
-            labels = self.predict_infos[self.sample_index]['pred_labels'][:, None] + 2
+            labels = self.predict_infos[self.sample_index]['pred_labels'][:, None] + 10
             boxes_3d = np.hstack([boxes_3d, labels])
             box_info = gl.create_boxes(bboxes_3d=boxes_3d)
             for box_item, l1_item, l2_item in zip(box_info['box_items'], box_info['l1_items'],\
@@ -229,6 +231,8 @@ class MainWindow(QWidget):
         f = open(file, 'rb')
         anno_list = pickle.load(f)
         self.predict_infos = anno_list
+        # show prediction after select annotation
+        self.show_sample()
 
     def show_sample(self):
         self.reset_viewer()
